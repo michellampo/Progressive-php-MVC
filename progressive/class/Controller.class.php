@@ -4,9 +4,7 @@ abstract class Controller {
 	public $parameters = array();
 	public $controller;
 
-	function __construct() {
-		//Why not add authorisation checks in here, then all controllers can inherit
-	}
+	function __construct() {}
 	
 	function view($viewname, $data = array(), $getText = false) {
 		$appfolder =  Progressive::getInstance()->getSetting('appfolder');

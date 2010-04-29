@@ -37,7 +37,7 @@ class Progressive {
 		}
 		$cache = new Cache($this->settings['cachetime'], $this->settings['cacheignore']);
 		if ($cache->hasPage($this->settings['app'], $this->settings['cachename'], $_GET['query'])) {
-			$fromCache = true;
+			$this->fromCache = true;
 			echo $cache->getPage($this->settings['app'], $this->settings['cachename'], $_GET['query']);
 		} else {
 			ob_start();
@@ -80,9 +80,9 @@ class Progressive {
 
 	private function writeLog($levelname, $location, $message) {
 		if (strlen($this->settings['sql']) == 0 || $this->settings['log_to_file'] || ($this->dbToolbox == null && $this->settings['log_benchmark_cached'])) {
-			if ($fromCache) $levelname = 'cache ' . $levelname;
+			if ($this->fromCache) $levelname = 'cache ' . $levelname;
 			// log to file
-			file_put_contents($this->settings['logfolder'] . '/' . date('Y.m.d') . '.log', "# $levelname # " . date('H:i:s') . " # $location # ". $_GET['query'] . " # $message" . PHP_EOL, FILE_APPEND);
+			file_put_contents($this->settings['logfolder'] . '/' . $this->settings['app'] . ' ' . date('Y.m.d') . '.log', "# $levelname # " . date('H:i:s') . " # $location # ". $_GET['query'] . " # $message" . PHP_EOL, FILE_APPEND);
 		} else {
 			if ($this->dbToolbox != null) {
 				// log to db
@@ -106,7 +106,15 @@ class Progressive {
 
 	static function log($level, $location, $message) {
 		if ($level > Progressive::getInstance()->getSetting('loglevel')) {
-			Progressive::getInstance()->writeLog();
+			$levelname = '';
+			switch ($level) {
+				case 1: case 2: $levelname = 'DEBUG'; break;
+				case 3: case 4: $levelname = 'INFO'; break;
+				case 5: case 6: $levelname = 'WARN'; break;
+				case 7: case 8: $levelname = 'ERROR'; break;
+				case 9: case 10: $levelname = 'FATAL'; break;
+			}
+			Progressive::getInstance()->writeLog($levelname, $location, $message);
 		}
 	}
 
