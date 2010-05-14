@@ -73,7 +73,7 @@ FORM;
 				header('HTTP/1.0 401 Unauthorized');
 				echo 'You need to log in to see this part of the application';
 			} else {
-				if ($this->authenticate($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'])) {
+				if ($this->authenticate($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) != 0) {
 					Log::info('Authcontroller', 'User logged in', 'access');
 					header('Location: ' . $this->loginSuccesfullUrl());
 				} else {
@@ -105,7 +105,7 @@ FORM;
 	 *
 	 * @param $login entered by the user
 	 * @param $password entered by the user
-	 * @return true/false whether the authentication was succesful
+	 * @return 0 als user niet geldig is, anders de userid
 	 */
 	abstract function authenticate($login, $password) ;
 
