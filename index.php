@@ -31,7 +31,8 @@ $settings = array(
 	'url' => 'http://localhost/progressive', // URL to this page (without trailing slash or .php)
 	'pre_query_url' => '', // part that has to be added before the actual query to come to this page
        // used if there are parts added inside the htaccess to control applications or databases
-       
+    'defaultcontroller' => 'doc', // controller for requests to "/"
+        
 	// Folders
     'appfolder' => 'c:/xampplite/htdocs/progressive/progressive/apps', // folder with apps (no trailing slash)
 	'logfolder' => 'c:/xampplite/htdocs/progressive/progressive/logs', // folder for logs, needs to be writeable (no trailing slash)

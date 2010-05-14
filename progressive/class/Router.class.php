@@ -26,7 +26,7 @@ class Router {
 
 		//Handle home page requests
 		if (count($path_components) == 1 && strlen($path_components[0]) == 0) {
-			$this->perform_controller_action("home",$action,array(),array());
+			$this->perform_controller_action(Progressive::getInstance()->getSetting('defaultcontroller'),$action,array(),array());
 			return;
 		}
 
@@ -123,6 +123,7 @@ class Router {
 			$controller = new $controller_class();
 			$controller->controller = $class;
 			$controller->parameters = $parameters;
+			Log::debug('Router dispatch', 'Dispatched to : ' . $class . ' - ' . $action , 'access');
 			call_user_func_array(array($controller,$action),$objects);
 			return;
 		}

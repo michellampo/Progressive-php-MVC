@@ -14,7 +14,7 @@ function error($code) {
 		404 => 'Not Found',
 		403 => 'Forbidden'
 	));
-	header("HTTP/1.0 $code Not Found");
+	header("HTTP/1.0 $code $description");
 	include_once(SITE_PATH . "/views/$code.php");
 	exit;
 }
@@ -50,9 +50,9 @@ function attributesToString($attributes) {
 function a($action, $text, $id='', $class='', $attr='') {
 	$action = Progressive::getUrl($action);
 	$link = "<a href=\"$action\" ";
-	if (strlen($id) > 0) $link .= "id=\"$id\"";
-	if (strlen($class) > 0) $link .= "class=\"$class\"";
-	$link .= " >$text</a>";
+	if (strlen($id) > 0) $link .= "id=\"$id\" ";
+	if (strlen($class) > 0) $link .= "class=\"$class\" ";
+	$link .= ">$text</a>";
 	return $link;
 }
 

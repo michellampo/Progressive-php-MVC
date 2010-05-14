@@ -1,0 +1,7 @@
+.buildpath
+.project
+.settings
+cfdoc/*
+logit/*
+progressive/apps/*
+

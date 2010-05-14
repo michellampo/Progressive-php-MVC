@@ -4,6 +4,9 @@ require 'class/Cache.class.php';
 require 'class/Router.class.php';
 
 require 'class/Controller.class.php';
+require 'class/SecureController.class.php';
+require 'class/AuthController.class.php';
+require 'class/Log.class.php';
 
 require 'helpers/utility.php';
 
@@ -65,6 +68,10 @@ class Progressive {
 	function getSetting($setting) {
 		return $this->settings[$setting];
 	}
+	
+	function hasSetting($setting) {
+		return array_key_exists($setting, $this->settings);
+	}
 
 	static function getInstance() {
 		return Progressive::$progressive;
@@ -82,11 +89,35 @@ class Progressive {
 		if (strlen($this->settings['sql']) == 0 || $this->settings['log_to_file'] || ($this->dbToolbox == null && $this->settings['log_benchmark_cached'])) {
 			if ($this->fromCache) $levelname = 'cache ' . $levelname;
 			// log to file
-			file_put_contents($this->settings['logfolder'] . '/' . $this->settings['app'] . ' ' . date('Y.m.d') . '.log', "# $levelname # " . date('H:i:s') . " # $location # ". $_GET['query'] . " # $message" . PHP_EOL, FILE_APPEND);
+			file_put_contents($this->settings['logfolder'] . '/' . $this->settings['app'] . '-' . date('Y.m.d') . '.log', "# $levelname # " . date('H:i:s') . " # $location # ". $_GET['query'] . " # $message" . PHP_EOL, FILE_APPEND);
 		} else {
 			if ($this->dbToolbox != null) {
 				// log to db
 				$log = Db::dispense('log');
+				$log->level = $levelname;
+				$log->date = date('Y.m.d');
+				$log->time = date('H:i:s');
+				$log->location = $location;
+				$log->query = $_GET['query'];
+				$log->message = $message;
+				Db::save($log);
+			}
+		}
+	}
+	
+	public function writeLogType($levelname, $location, $message, $type) {
+		if ($type === 'log') {
+			Log::fatal($location, 'Do not use "writeLogType()" to write to main log file! Original message:' . $message);
+			return;
+		}
+		if (strlen($this->settings['sql']) == 0 || $this->settings['log_to_file'] || ($this->dbToolbox == null && $this->settings['log_benchmark_cached'])) {
+			if ($this->fromCache) $levelname = 'cache ' . $levelname;
+			// log to file
+			file_put_contents($this->settings['logfolder'] . '/' . $this->settings['app'] . '-' . date('Y.m.d') . '.' . $type, "# $levelname # " . date('H:i:s') . " # $location # ". $_GET['query'] . " # $message" . PHP_EOL, FILE_APPEND);
+		} else {
+			if ($this->dbToolbox != null) {
+				// log to db
+				$log = Db::dispense($type);
 				$log->level = $levelname;
 				$log->date = date('Y.m.d');
 				$log->time = date('H:i:s');
@@ -105,7 +136,7 @@ class Progressive {
 	}
 
 	static function log($level, $location, $message) {
-		if ($level > Progressive::getInstance()->getSetting('loglevel')) {
+		if ($level >= Progressive::getInstance()->getSetting('loglevel')) {
 			$levelname = '';
 			switch ($level) {
 				case 1: case 2: $levelname = 'DEBUG'; break;
