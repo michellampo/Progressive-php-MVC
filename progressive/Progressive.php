@@ -69,6 +69,12 @@ class Progressive {
 		return $this->settings[$setting];
 	}
 	
+	static function getAppSetting($setting) {
+		$progressive = Progressive::getInstance();
+		$appsettings = $progressive->getSetting('appsettings');
+		return $appsettings[$setting];
+	}
+	
 	function hasSetting($setting) {
 		return array_key_exists($setting, $this->settings);
 	}

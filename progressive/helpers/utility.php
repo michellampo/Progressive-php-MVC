@@ -24,6 +24,10 @@ function startsWith($Haystack, $Needle){
 	return strpos($Haystack, $Needle) === 0;
 }
 
+function endsWith($Haystack, $Needle){
+	return strpos($Haystack, $Needle) === strlen($Haystack) - strlen($Needle);
+}
+
 function requiresHelpers($helpers) {
 	foreach ($helpers as $helper) {
 		require_once dirname(__FILE__) . '/' . $helper . '.php';

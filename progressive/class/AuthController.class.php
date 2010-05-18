@@ -65,7 +65,21 @@ FORM;
 		$this->preLoginHook();
 		$authmethod = $this->getAuthenticationMethod();
 		if ( strcmp( strtolower( $authmethod ), strtolower( 'Form' ) ) == 0 ) {
-
+			// Form auth
+			$fields = $this->getFormFieldsNames();
+			foreach ($fields as $key => $value) {
+				$fields[$key] = $_POST[$value];
+			}
+			$userid = $this->authenticateForm($fields);
+			if ($userid != 0) {
+					$_SESSION['userid'] = $userid;
+					Log::info('Authcontroller',  'User logged in : ' . $userid, 'access');
+					header('Location: ' . $this->loginSuccesfullUrl());
+				} else {
+					Log::error('Authcontroller', 'User refused', 'access');
+					header('HTTP/1.0 401 Unauthorized');
+					header('Location: ' . $this->loginFailedUrl());
+				}
 		} else {
 			// Basic auth
 			if (!isset($_SERVER['PHP_AUTH_USER'])) {
@@ -73,8 +87,10 @@ FORM;
 				header('HTTP/1.0 401 Unauthorized');
 				echo 'You need to log in to see this part of the application';
 			} else {
-				if ($this->authenticate($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) != 0) {
-					Log::info('Authcontroller', 'User logged in', 'access');
+				$userid = $this->authenticate($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']);
+				if ($userid != 0) {
+					$_SESSION['userid'] = $userid;
+					Log::info('Authcontroller', 'User logged in : ' . $userid, 'access');
 					header('Location: ' . $this->loginSuccesfullUrl());
 				} else {
 					Log::error('Authcontroller', 'User refused', 'access');

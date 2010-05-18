@@ -1,3 +1,7 @@
+String.prototype.startsWith = function(str) {
+	return (this.match("^"+str)==str);
+}
+
 /**
  * @author Michel Lampo
  */
@@ -6,6 +10,16 @@ $(document).ready(function(){
 	resizeWindow();
 	fixer('#menu_fixer a', '#menu', 'fixed');
 	fixer('#extrabar_fixer a', '#extrabar', 'fixed');
+	
+	$('a').live('click', function() {
+		if ($(this).attr('href').startsWith('http')) return true;
+		if ($(this).attr('href') == '#') {
+			switch ($(this).attr('id')) {
+				case 'reindex': $.get(url + 'taconite/reindex/' + currentlog); break;
+			}
+		}
+		return false;
+	});
 });
 
 

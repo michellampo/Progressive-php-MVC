@@ -2,7 +2,7 @@
 abstract class Controller {
 
 	public $parameters = array();
-//	public $models = array();
+	public $models = array();
 	public $controller;
 
 	function __construct() {}
@@ -30,7 +30,7 @@ abstract class Controller {
 		require_once "$appfolder/$app/models/$modelclass.php";
 		
 		$fullclassname = $modelclass . '_model';
-	//	$this->models[$modelname] = new $fullclassname();
+		$this->models[$modelname] = new $fullclassname();
 		$this->$modelname = new $fullclassname();
 	}
 	

@@ -15,4 +15,9 @@ class taconite_controller extends Controller {
 		}
 	}
 	
+	public function reindex() {
+		$log = $this->parameters['log'];
+		$this->view('reindex', array('log' => $log));
+	}
+	
 }

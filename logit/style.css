@@ -373,6 +373,7 @@ ul#sidebar {
 
 #menu ul li:hover ul {
 	display: block;
+	z-index: 50;
 }
 
 #extrabar {
@@ -606,4 +607,12 @@ a.addPage {
 
 a#reindex {
 	background-image: url('images/icons/database_refresh.png') !important;
+}
+
+a.log {
+	background-image: url('images/icons/database_go.png') !important;
+}
+
+a.loggroup {
+	background-image: url('images/icons/database_table.png') !important;
 }
